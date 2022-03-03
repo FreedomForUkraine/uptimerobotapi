@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -223,12 +224,12 @@ func fixBrokenFieldsTypes(m map[string]interface{}) map[string]interface{} {
 
 		port, ok := monitor["port"].(float64)
 		if ok {
-			monitor["port"] = fmt.Sprintf("%d", port)
+			monitor["port"] = strconv.Itoa(int(port))
 		}
 
 		subType, ok := monitor["sub_type"].(float64)
 		if ok {
-			monitor["sub_type"] = fmt.Sprintf("%d", subType)
+			monitor["sub_type"] = strconv.Itoa(int(subType))
 		}
 	}
 

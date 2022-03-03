@@ -176,6 +176,7 @@ func (c *Client) request(method string, urlStr string, opt interface{}, response
 		return &apiErrResp.Error
 	}
 
+	apiResp = fixBrokenFieldsTypes(apiResp)
 	err = createFromMap(apiResp, &responseModel)
 
 	return err
@@ -196,4 +197,40 @@ func createFromMap(m map[string]interface{}, result interface{}) error {
 	data, _ := json.Marshal(m)
 	err := json.Unmarshal(data, &result)
 	return err
+}
+
+// Straightforward piece of shit.
+func fixBrokenFieldsTypes(m map[string]interface{}) map[string]interface{} {
+	monitorsDTO, ok := m["monitors"]
+	if !ok {
+		return m
+	}
+
+	monitors, ok := monitorsDTO.([]interface{})
+	if !ok {
+		return m
+	}
+
+	for _, rawMonitor := range monitors {
+		monitor, ok := rawMonitor.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		if _, ok := monitor["port"]; !ok {
+			continue
+		}
+
+		port, ok := monitor["port"].(float64)
+		if ok {
+			monitor["port"] = fmt.Sprintf("%d", port)
+		}
+
+		subType, ok := monitor["sub_type"].(float64)
+		if ok {
+			monitor["sub_type"] = fmt.Sprintf("%d", subType)
+		}
+	}
+
+	return m
 }

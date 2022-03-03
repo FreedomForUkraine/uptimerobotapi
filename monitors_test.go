@@ -31,7 +31,7 @@ func TestGetMonitors(t *testing.T) {
 							"sub_type": "",
             				"keyword_type": null,
             				"keyword_case_type": 0,
-            				"port": 0,
+            				"port": "",
             				"interval": 600,
             				"timeout": 30,
             				"status": 0,
